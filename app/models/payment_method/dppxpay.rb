@@ -1,4 +1,4 @@
-class PaymentMethod::Pxpay < PaymentMethod
+class PaymentMethod::Dppxpay < PaymentMethod
   def actions
     %w{capture void}
   end
