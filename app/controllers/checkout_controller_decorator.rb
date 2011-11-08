@@ -26,43 +26,36 @@ CheckoutController.class_eval do
 
     def dps_callback
       
-      response = Pxpay::Response.new(params).response
-        hash = response.to_hash
-        
-        @reply = hash
-        
-        logger.warn @reply
+      response = Pxpay::Response.new(params).response.to_hash            
       
+      logger.info response
       
-        
+      @order = Order.find(response[:merchant_reference])
       
+                  if @order && response[:success] == '1'
+                    gateway = @order.payment_method
       
-      # @order = Order.find(params[:order_id])
-      # 
-      #       if @order && params[:status] == 'success'
-      #         gateway = PaymentMethod.find(params[:payment_method_id])
-      # 
-      #         @order.payments.clear
-      #         payment = @order.payments.create
-      #         payment.started_processing
-      #         payment.amount = @order.total
-      #         payment.payment_method = gateway
-      #         payment.complete
-      #         @order.save
-      # 
-      #         #need to force checkout to complete state
-      #         until @order.state == "complete"
-      #           if @order.next!
-      #             @order.update!
-      #             state_callback(:after)
-      #           end
-      #         end
-      # 
-      #         flash[:notice] = I18n.t(:order_processed_successfully)
-      #         redirect_to completion_route
-      #       else
-      #         redirect_to checkout_state_path(@order.state)
-      #       end
+                    @order.payments.clear
+                    payment = @order.payments.create
+                    payment.started_processing
+                    payment.amount = @order.total
+                    payment.payment_method = gateway
+                    payment.complete
+                    @order.save
+          
+                    #need to force checkout to complete state
+                    until @order.state == "complete"
+                      if @order.next!
+                        @order.update!
+                        state_callback(:after)
+                      end
+                    end
+          
+                    flash[:notice] = I18n.t(:order_processed_successfully)
+                    redirect_to completion_route
+                  else
+                    redirect_to checkout_state_path(@order.state)
+                  end
     end
     
   
