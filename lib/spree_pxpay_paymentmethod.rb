@@ -23,4 +23,5 @@ module SpreePxpayPaymentmethod
     end
 
     config.to_prepare &method(:activate).to_proc
-  endend
+  end
+end

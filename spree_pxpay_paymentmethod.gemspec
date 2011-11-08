@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email       = ["caleb.tutty@gmail.com"]
   s.homepage    = ""
   s.summary     = ""
-  s.description = %q{TODO: Write a gem description}
+  s.description = "DPS PXPay payment method for Spree"
 
   s.rubyforge_project = "spree_pxpay_paymentmethod"
 
