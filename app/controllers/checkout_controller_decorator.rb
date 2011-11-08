@@ -29,7 +29,7 @@ CheckoutController.class_eval do
       response = Pxpay::Response.new(params).response
         hash = response.to_hash
         
-        @reply = hash.to_s
+        @reply = hash
         
         logger.warn @reply
       
