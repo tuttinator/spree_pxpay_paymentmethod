@@ -18,9 +18,7 @@ CheckoutController.class_eval do
 
       if !payment_method.nil? && payment_method.kind_of?(PaymentMethod::Dppxpay)
         
-        request = Pxpay::Request.new(@order.id, @order.total, {:url_success => 'http://killerballs.co.nz/checkout/dps_callback', :url_failure => 'http://killerballs.co.nz/checkout/dps_callback'})
-        
-        
+        request = Pxpay::Request.new(@order.id, @order.total, {:url_success => 'http://killerballs.co.nz/checkout/dps_callback', :url_failure => 'http://killerballs.co.nz/checkout/dps_callback'})        
         
         redirect_to request.url
       end
@@ -33,7 +31,7 @@ CheckoutController.class_eval do
         
         @reply = hash.to_s
         
-        logger.info @reply
+        logger.warn @reply
       
       
         
