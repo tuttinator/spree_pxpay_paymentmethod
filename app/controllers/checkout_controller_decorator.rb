@@ -31,34 +31,40 @@ CheckoutController.class_eval do
       response = Pxpay::Response.new(params).response
         hash = response.to_hash
         
-        logger.info hash.to_s
+        @reply = hash.to_s
+        
+        logger.info @reply
       
-      @order = Order.find(params[:order_id])
-
-      if @order && params[:status] == 'success'
-        gateway = PaymentMethod.find(params[:payment_method_id])
-
-        @order.payments.clear
-        payment = @order.payments.create
-        payment.started_processing
-        payment.amount = @order.total
-        payment.payment_method = gateway
-        payment.complete
-        @order.save
-
-        #need to force checkout to complete state
-        until @order.state == "complete"
-          if @order.next!
-            @order.update!
-            state_callback(:after)
-          end
-        end
-
-        flash[:notice] = I18n.t(:order_processed_successfully)
-        redirect_to completion_route
-      else
-        redirect_to checkout_state_path(@order.state)
-      end
+      
+        
+      
+      
+      # @order = Order.find(params[:order_id])
+      # 
+      #       if @order && params[:status] == 'success'
+      #         gateway = PaymentMethod.find(params[:payment_method_id])
+      # 
+      #         @order.payments.clear
+      #         payment = @order.payments.create
+      #         payment.started_processing
+      #         payment.amount = @order.total
+      #         payment.payment_method = gateway
+      #         payment.complete
+      #         @order.save
+      # 
+      #         #need to force checkout to complete state
+      #         until @order.state == "complete"
+      #           if @order.next!
+      #             @order.update!
+      #             state_callback(:after)
+      #           end
+      #         end
+      # 
+      #         flash[:notice] = I18n.t(:order_processed_successfully)
+      #         redirect_to completion_route
+      #       else
+      #         redirect_to checkout_state_path(@order.state)
+      #       end
     end
     
   
