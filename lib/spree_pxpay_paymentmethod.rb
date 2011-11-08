@@ -18,7 +18,7 @@ module SpreePxpayPaymentmethod
     
     initializer "spree_pxpay_paymentmethod.register.payment_methods" do |app|
       app.config.spree.payment_methods += [
-        PaymentMethod::PXPay
+        PaymentMethod::Pxpay
       ]
     end
 
