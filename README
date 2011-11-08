@@ -1,0 +1,5 @@
+This is a gem for Spree > 0.70 which adds PXPay (paymentexpress.com - a NZ and Australian Payment Processor) as a Payment Method.
+
+This is does not use Active Merchant - this is not the version of the gateway with an API (see ActiveMerchant PXPost docs), PXPay is the service hosted on the Payment Express servers and credit card information is never touched by your Spree implementation (sort of like PayPal's Website Payments system).
+
+This is one of my first Spree Gems, with tests yet to do. Please excuse glaring mistakes. Written to suit a client's needs.
