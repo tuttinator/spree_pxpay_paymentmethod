@@ -1,4 +1,7 @@
 class PaymentMethod::Dppxpay < PaymentMethod
+  
+  require 'logger'
+  
   def actions
     %w{capture void}
   end
@@ -14,8 +17,9 @@ class PaymentMethod::Dppxpay < PaymentMethod
   end
   
   def capture(payment)
+    log = Logger.new('log.txt')
     payment.update_attribute(:state, 'pending') if payment.state == 'checkout'
-    logger.info "This is when the capture is made"
+    log.debug "This is when the capture is made"
     payment.complete
     true
   end
