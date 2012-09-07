@@ -22,6 +22,6 @@ Gem::Specification.new do |s|
   # s.add_development_dependency "rspec"
   # s.add_runtime_dependency "rest-client"
   s.add_dependency('spree_core', '>= 0.70.0')
-  #s.add_dependency('pxpay')
+  s.add_dependency('pxpay', '~> 0.2.6')
   
 end
