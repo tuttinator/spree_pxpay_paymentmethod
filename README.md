@@ -28,6 +28,8 @@ The DPS documentation talks of being able to embed as an iframe. I'd like to
 see if it is possible within Spree's checkout process somewhere. Have to look
 into the states within the state machine, I imagine.
 
+Specs, obviously ;)
+
 ## THANKS
 
 Inspired by the [spree-hosted-gateway gem](https://github.com/joshmcarthur/spree-hosted-gateway) and the work done by
