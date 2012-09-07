@@ -1,57 +1,51 @@
 Spree::CheckoutController.class_eval do
-  before_filter :redirect_to_dps, :only => [:update]
   skip_before_filter :verify_authenticity_token, :only => [:dps_callback]
+  skip_before_filter :load_order, :only => :px_pay_callback
 
-  def redirect_to_dps
-    confirmation_step_present = Spree::Gateway.current && Spree::Gateway.current.payment_profiles_supported?
-    if !confirmation_step_present && params[:state] == "payment"
-      return unless params[:order][:payments_attributes]
-      load_order
-      payment_method = PaymentMethod.find(params[:order][:payments_attributes].first[:payment_method_id])
-    elsif confirmation_step_present && params[:state] == "confirm"
-      load_order
-      payment_method = @order.payment_method
-    end
+  # Handles the response from PxPay (success or failure) and updates the
+  # relevant Payment record.
+  def px_pay_callback
+    response = Pxpay::Response.new(params).response.to_hash
 
-    if !payment_method.nil? && payment_method.kind_of?(Spree::Gateway::PxPay)
+    payment = Spree::Payment.find(response[:merchant_reference])
 
-      request = Pxpay::Request.new(@order.id, @order.total, {:url_success => 'http://killerballs.co.nz/checkout/dps_callback', :url_failure => 'http://killerballs.co.nz/checkout/dps_callback'})
+    if payment then
+      if response[:success] == '1'
+        payment.started_processing
+        payment.response_code = response[:auth_code]
+        payment.save
+        payment.complete
+        @order = payment.order
+        @order.next
 
-      redirect_to request.url
+        state_callback(:after)
+        if @order.state == "complete" || @order.completed?
+          state_callback(:before)
+          flash.notice = t(:order_processed_successfully)
+          flash[:commerce_tracking] = "nothing special"
+          redirect_to completion_route
+        else
+          respond_with(@order, :location => checkout_state_path(@order.state))
+        end
+      else
+        payment.void
+        redirect_to cart_path, :notice => 'Your credit card details were declined. Please check your details and try again.'
+      end
+    else
+      # Bad Payment!
+      raise Spree::Core::GatewayError, "Unknown merchant_reference: #{response[:merchant_reference]}"
     end
   end
 
-  def dps_callback
+private
 
-    response = Pxpay::Response.new(params).response.to_hash
+  alias :before_payment_without_px_pay_redirection :before_payment
+  def before_payment
+    before_payment_without_px_pay_redirection
+    redirect_to px_pay_gateway.url(@order, request)
+  end
 
-    logger.info response
-
-    @order = Order.find(response[:merchant_reference])
-
-    if @order && response[:success] == '1'
-      gateway = @order.payment_method
-
-      @order.payments.clear
-      payment = @order.payments.create
-      payment.started_processing
-      payment.amount = @order.total
-      payment.payment_method = gateway
-      payment.complete
-      @order.save
-
-      #need to force checkout to complete state
-      until @order.state == "complete"
-        if @order.next!
-          @order.update!
-          state_callback(:after)
-        end
-      end
-
-      flash[:notice] = I18n.t(:order_processed_successfully)
-      redirect_to completion_route
-    else
-      redirect_to checkout_state_path(@order.state)
-    end
+  def px_pay_gateway
+    @order.available_payment_methods.find { |x| x.is_a?(Spree::Gateway::PxPay) }
   end
 end
