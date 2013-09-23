@@ -19,7 +19,7 @@ Spree::CheckoutController.class_eval do
         @order.next
 
         state_callback(:after)
-        if @order.state == "complete" || @order.completed?
+        if @order.state == "complete" 
           state_callback(:before)
           flash.notice = t(:order_processed_successfully)
           flash[:commerce_tracking] = "nothing special"
