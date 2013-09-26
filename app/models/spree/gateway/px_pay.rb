@@ -37,10 +37,11 @@ module Spree
 
 private
 
-    # Finds the pending payment or creates a new one.
+      # Finds the pending payment or creates a new one.
     def payment(order)
-      payment = order.payments.pending.first
-      return payment if payment.present?
+
+      payment = order.payments.where('spree_payments.state = ?', 'pending')
+      return payment unless payment.blank?
 
       payment = order.payments.new
       payment.amount = order.total
