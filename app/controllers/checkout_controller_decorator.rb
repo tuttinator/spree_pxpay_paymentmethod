@@ -15,23 +15,22 @@ Spree::CheckoutController.class_eval do
     response = Pxpay::Response.new(params).response.to_hash
 
     payment = Spree::Payment.find(response[:merchant_reference])
-    if payment then
+    if payment
 
       if response[:success] == '1'
-        payment.started_processing
+        payment.process!
         payment.response_code = response[:auth_code]
         payment.save
         payment.complete
-        order = payment.order
-        order.next
 
-        if order.complete?
-          flash.notice = Spree.t(:order_processed_successfully)
-          redirect_to completion_route
-        else
-          redirect_to checkout_state_path(order.state)
-        end
+        order = current_order
 
+        order.state = 'complete'
+        order.shipment_state = 'ready'
+        order.save
+        order.deliver_order_confirmation_email
+        flash.notice = Spree.t(:order_processed_successfully)
+        redirect_to order_path(order, :token => order.token)
       else
         payment.void
         redirect_to cart_path, :notice => 'Your credit card details were declined. Please check your details and try again.'
