@@ -24,11 +24,13 @@ Spree::CheckoutController.class_eval do
         payment.complete
 
         order = current_order
-
         order.state = 'complete'
         order.shipment_state = 'ready'
+        order.completed_at  = Time.now
         order.save
+
         order.deliver_order_confirmation_email
+
         flash.notice = Spree.t(:order_processed_successfully)
         redirect_to order_path(order, :token => order.token)
       else
