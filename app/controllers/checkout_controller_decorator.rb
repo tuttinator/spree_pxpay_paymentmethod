@@ -23,7 +23,7 @@ Spree::CheckoutController.class_eval do
         payment.save
         payment.complete
 
-        order = current_order
+        order = payment.order
         order.state = 'complete'
         order.shipment_state = 'ready'
         order.completed_at  = Time.now
