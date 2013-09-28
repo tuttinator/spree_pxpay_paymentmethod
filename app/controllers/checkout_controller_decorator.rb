@@ -2,12 +2,12 @@ Spree::CheckoutController.class_eval do
   skip_before_filter :verify_authenticity_token, :only => [:dps_callback]
   skip_before_filter :load_order, :only => :px_pay_callback
   skip_before_filter :ensure_order_not_completed, :only => :px_pay_callback
-  skip_before_filter :ensure_checkout_allowed
-  skip_before_filter :ensure_sufficient_stock_lines
-  skip_before_filter :ensure_valid_state
+  skip_before_filter :ensure_checkout_allowed  , :only => :px_pay_callback
+  skip_before_filter :ensure_sufficient_stock_lines, :only => :px_pay_callback
+  skip_before_filter :ensure_valid_state , :only => :px_pay_callback
 
-  skip_before_filter :associate_user
-  skip_before_filter :check_authorization
+  skip_before_filter :associate_user , :only => :px_pay_callback
+  skip_before_filter :check_authorization , :only => :px_pay_callback
 
   # Handles the response from PxPay (success or failure) and updates the
   # relevant Payment record. works with spree 2.0.3
@@ -25,7 +25,6 @@ Spree::CheckoutController.class_eval do
 
         order = payment.order
         order.state = 'complete'
-        order.shipment_state = 'ready'
         order.completed_at  = Time.now
         order.save
 
