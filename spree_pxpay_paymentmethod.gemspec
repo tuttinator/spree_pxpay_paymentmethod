@@ -18,6 +18,6 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency('spree_core', '~> 2.0.3')
+  s.add_dependency('spree_core', '~> 2.1.7')
   s.add_dependency('pxpay', '~> 0.2.6')
 end
