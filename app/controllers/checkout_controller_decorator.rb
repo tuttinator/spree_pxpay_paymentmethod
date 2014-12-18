@@ -1,4 +1,5 @@
 Spree::CheckoutController.class_eval do
+
   skip_before_filter :verify_authenticity_token, :only => [:dps_callback]
   skip_before_filter :load_order, :only => :px_pay_callback
   skip_before_filter :ensure_order_not_completed, :only => :px_pay_callback
@@ -8,9 +9,11 @@ Spree::CheckoutController.class_eval do
 
   skip_before_filter :associate_user , :only => :px_pay_callback
   skip_before_filter :check_authorization , :only => :px_pay_callback
+  skip_before_filter :apply_coupon_code , :only => :px_pay_callback
+  skip_before_filter :setup_for_current_state , :only => :px_pay_callback
 
   # Handles the response from PxPay (success or failure) and updates the
-  # relevant Payment record. works with spree 2.0.3
+  # relevant Payment record. works with spree 2.1.7
   def px_pay_callback
     response = Pxpay::Response.new(params).response.to_hash
 

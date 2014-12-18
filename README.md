@@ -1,6 +1,6 @@
 # Spree PxPay Gateway
 
-This is a gem for Spree 2.0.3 which adds PXPay (paymentexpress.com - a NZ and
+This is a gem for Spree 2.1.7 which adds PXPay (paymentexpress.com - a NZ and
 Australian Payment Processor) as a Payment Method.
 
 This is does not use Active Merchant - this is not the version of the gateway
@@ -19,8 +19,9 @@ this. You can manually create payments on the back-end as per usual.
 
  1. Add the gem to your Gemfile
  2. `bundle install`
- 3. Add a new Payment Method in the admin section using the `Spree::Gateway::PxPay`
- 4. Set the relevant configuration details
+ 3. Add `Spree::Gateway::PxPay` to the spree.payment_methods Array in your Spree initializer (`config/initializers/spree.rb`)
+ 4. Add a new Payment Method in the admin section using the `Spree::Gateway::PxPay`
+ 5. Set the relevant configuration details
 
 ## TODO
 
