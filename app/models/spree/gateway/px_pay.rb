@@ -31,7 +31,7 @@ module Spree
     end
 
     def url(order, request)
-      callback = callback_url(request.host, request.protocol)
+      callback = callback_url(request.host, request.protocol, request.port)
       px_pay_request(payment(order), callback).url
     end
 
@@ -58,8 +58,8 @@ private
     end
 
     # Calculates the url to return to after the PxPay process completes
-    def callback_url(host, protocol)
-      url_for(:controller => 'spree/checkout', :action => 'px_pay_callback', :only_path => false, :host => host, :protocol => protocol)
+    def callback_url(host, protocol, port)
+      url_for(:controller => 'spree/checkout', :action => 'px_pay_callback', :only_path => false, :host => host, :protocol => protocol, :port => port)
     end
   end
 end
