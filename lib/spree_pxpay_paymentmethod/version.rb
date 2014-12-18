@@ -1,3 +1,3 @@
 module SpreePxpayPaymentmethod
-  VERSION = "1.0.3beta"
+  VERSION = "1.0.0"
 end
