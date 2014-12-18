@@ -1,5 +1,12 @@
 # Spree PxPay Gateway
 
+# NOTE:
+
+----
+This fork is no longer maintained, please use:
+[https://github.com/localist/spree_pxpay_paymentmethod](https://github.com/localist/spree_pxpay_paymentmethod)
+---
+
 This is a gem for Spree 2.1.7 which adds PXPay (paymentexpress.com - a NZ and
 Australian Payment Processor) as a Payment Method.
 
