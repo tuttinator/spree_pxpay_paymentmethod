@@ -15,8 +15,6 @@ module Spree
     preference :key, :string
     preference :currency_input, :string, :default => 'AUD', :description => "3 digit currency code from #{Pxpay::Base.currency_types.join(' ')}"
 
-    attr_accessible :preferred_user_id, :preferred_key, :preferred_currency_input
-
     def source_required?
       false
     end
@@ -31,14 +29,15 @@ module Spree
     end
 
     def url(order, request)
-      callback = callback_url(request.host, request.protocol)
+      callback = callback_url(request.host, request.protocol, request.port)
       px_pay_request(payment(order), callback).url
     end
 
 private
 
-    # Finds the pending payment or creates a new one.
+      # Finds the pending payment or creates a new one.
     def payment(order)
+
       payment = order.payments.pending.first
       return payment if payment.present?
 
@@ -57,8 +56,8 @@ private
     end
 
     # Calculates the url to return to after the PxPay process completes
-    def callback_url(host, protocol)
-      url_for(:controller => 'spree/checkout', :action => 'px_pay_callback', :only_path => false, :host => host, :protocol => protocol)
+    def callback_url(host, protocol, port)
+      url_for(:controller => 'spree/checkout', :action => 'px_pay_callback', :only_path => false, :host => host, :protocol => protocol, :port => port)
     end
   end
 end
